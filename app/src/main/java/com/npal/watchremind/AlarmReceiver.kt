@@ -18,8 +18,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val location = intent.getStringExtra("event_location") ?: ""
         val timeStr = SimpleDateFormat("HH:mm", Locale.ITALIAN).format(Date(startTime))
 
-        val prefs = context.getSharedPreferences("watchremind", Context.MODE_PRIVATE)
-        val apiKey = prefs.getString("gemini_api_key", "") ?: ""
+        val apiKey = BuildConfig.GEMINI_API_KEY
 
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {

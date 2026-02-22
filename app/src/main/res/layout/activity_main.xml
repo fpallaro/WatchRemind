@@ -19,32 +19,21 @@
             android:textSize="15sp"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
-
-        <EditText
-            android:id="@+id/apiKeyInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Chiave API Gemini"
-            android:textSize="11sp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:inputType="textPassword"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Salva e Attiva"
+            android:text="Attiva"
             android:textSize="12sp"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="12dp" />
 
         <TextView
             android:id="@+id/statusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inserisci chiave API Gemini"
+            android:text="In attesa..."
             android:textSize="10sp"
             android:textColor="#AAAAAA"
             android:gravity="center" />

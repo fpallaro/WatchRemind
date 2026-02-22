@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APKs
 
 on:
   push:
@@ -24,12 +24,24 @@ jobs:
         with:
           gradle-version: '8.6'
 
-      - name: Build Debug APK
-        run: gradle assembleDebug --info 2>&1 | tail -100
+      - name: Build Phone APK
+        run: gradle :phone:assembleDebug --info 2>&1 | tail -100
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
-      - name: Upload APK
+      - name: Build Watch APK
+        run: gradle :app:assembleDebug --info 2>&1 | tail -100
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Upload Phone APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhoneRemind-APK
+          path: phone/build/outputs/apk/debug/phone-debug.apk
+          retention-days: 30
+
+      - name: Upload Watch APK
         uses: actions/upload-artifact@v4
         with:
           name: WatchRemind-APK

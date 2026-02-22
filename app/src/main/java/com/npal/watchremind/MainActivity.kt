@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
 class MainActivity : FragmentActivity() {
@@ -14,6 +15,7 @@ class MainActivity : FragmentActivity() {
         setContentView(R.layout.activity_main)
         findViewById<TextView>(R.id.statusText).text = "WatchRemind attivo"
         requestBatteryOptimizationExemption()
+        ContextCompat.startForegroundService(this, Intent(this, ReminderService::class.java))
     }
 
     private fun requestBatteryOptimizationExemption() {

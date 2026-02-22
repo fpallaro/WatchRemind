@@ -33,6 +33,6 @@ object NotificationSender {
             .build()
 
         context.getSystemService(NotificationManager::class.java)
-            .notify((2000 + eventId).toInt(), notification)
+            .notify((2000 + (eventId % Int.MAX_VALUE)).toInt(), notification)
     }
 }

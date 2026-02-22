@@ -75,7 +75,7 @@ object CalendarPoller {
                 putExtra("event_location", event.location)
             }
             val pending = PendingIntent.getBroadcast(
-                context, event.id.toInt(), intent,
+                context, (event.id % Int.MAX_VALUE).toInt(), intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pending)

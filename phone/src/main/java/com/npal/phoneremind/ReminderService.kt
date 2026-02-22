@@ -15,6 +15,8 @@ import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 
 class ReminderService : Service() {
 
@@ -23,6 +25,8 @@ class ReminderService : Service() {
         private const val FOREGROUND_ID = 1
         private const val CHANNEL_SERVICE = "phone_remind_service"
     }
+
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private val calendarObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
         override fun onChange(selfChange: Boolean) {
@@ -48,13 +52,14 @@ class ReminderService : Service() {
 
     override fun onDestroy() {
         contentResolver.unregisterContentObserver(calendarObserver)
+        serviceScope.cancel()
         super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun rescan() {
-        CoroutineScope(Dispatchers.IO).launch {
+        serviceScope.launch {
             try {
                 val events = CalendarPoller.getUpcomingEvents(this@ReminderService)
                 CalendarPoller.scheduleAlarms(this@ReminderService, events)

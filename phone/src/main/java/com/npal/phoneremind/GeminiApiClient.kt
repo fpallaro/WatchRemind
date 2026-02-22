@@ -42,7 +42,7 @@ Inizia con "Attenzione" o simile. Rispondi solo con il testo vocale, nient'altro
             .build()
 
         val response = client.newCall(request).execute()
-        val responseBody = response.body?.string() ?: throw Exception("Empty response")
+        val responseBody = response.use { it.body?.string() } ?: throw Exception("Empty response")
 
         return JSONObject(responseBody)
             .getJSONArray("candidates")

@@ -37,7 +37,7 @@ Inizia con "Attenzione" o simile. Rispondi solo con il testo vocale, nient'altro
             )).toString()
 
         val request = Request.Builder()
-            .url("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey")
+            .url("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$apiKey")
             .post(body.toRequestBody("application/json".toMediaType()))
             .build()
 

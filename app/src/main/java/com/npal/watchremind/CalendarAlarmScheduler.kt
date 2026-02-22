@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.provider.CalendarContract
-import androidx.core.content.getSystemService
 import java.util.concurrent.TimeUnit
 
 object CalendarAlarmScheduler {
@@ -13,7 +12,7 @@ object CalendarAlarmScheduler {
     fun scheduleUpcoming(context: Context): Int {
         val now = System.currentTimeMillis()
         val weekFromNow = now + TimeUnit.DAYS.toMillis(7)
-        val alarmManager = context.getSystemService<AlarmManager>()!!
+        val alarmManager = context.getSystemService(android.content.Context.ALARM_SERVICE) as AlarmManager
 
         val cursor = context.contentResolver.query(
             CalendarContract.Events.CONTENT_URI,

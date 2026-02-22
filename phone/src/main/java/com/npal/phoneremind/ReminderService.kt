@@ -37,6 +37,10 @@ class ReminderService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        val channel = NotificationChannel(
+            CHANNEL_SERVICE, "Servizio Promemoria", NotificationManager.IMPORTANCE_LOW
+        )
+        getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         contentResolver.registerContentObserver(
             CalendarContract.Events.CONTENT_URI,
             true,
@@ -70,10 +74,6 @@ class ReminderService : Service() {
     }
 
     private fun buildForegroundNotification(): Notification {
-        val channel = NotificationChannel(
-            CHANNEL_SERVICE, "Servizio Promemoria", NotificationManager.IMPORTANCE_LOW
-        )
-        getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         return NotificationCompat.Builder(this, CHANNEL_SERVICE)
             .setContentTitle("PhoneRemind")
             .setContentText("Monitoraggio calendario attivo")

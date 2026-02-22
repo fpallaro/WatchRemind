@@ -42,9 +42,13 @@ Inizia con "Attenzione" o simile. Rispondi solo con il testo vocale, nient'altro
             .build()
 
         val response = client.newCall(request).execute()
-        val responseBody = response.use { it.body?.string() } ?: throw Exception("Empty response")
+        val (isSuccessful, code, responseBody) = response.use { r ->
+            Triple(r.isSuccessful, r.code, r.body?.string())
+        }
+        if (!isSuccessful) throw Exception("Gemini HTTP $code: $responseBody")
+        val body2 = responseBody ?: throw Exception("Empty response")
 
-        return JSONObject(responseBody)
+        return JSONObject(body2)
             .getJSONArray("candidates")
             .getJSONObject(0)
             .getJSONObject("content")

@@ -1,9 +1,8 @@
 package com.npal.watchremind
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import java.util.Locale
 
 object TtsAnnouncer {
@@ -13,9 +12,12 @@ object TtsAnnouncer {
         tts = TextToSpeech(context.applicationContext) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 tts?.language = Locale.ITALIAN
+                tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onDone(utteranceId: String?) { tts?.shutdown() }
+                    override fun onError(utteranceId: String?) { tts?.shutdown() }
+                    override fun onStart(utteranceId: String?) {}
+                })
                 tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "watchremind_utterance")
-                // Shutdown TTS after enough time to finish speaking
-                Handler(Looper.getMainLooper()).postDelayed({ tts?.shutdown() }, 15_000)
             }
         }
     }

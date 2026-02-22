@@ -25,12 +25,12 @@ jobs:
           gradle-version: '8.6'
 
       - name: Build Phone APK
-        run: gradle :phone:assembleDebug --info 2>&1 | tail -100
+        run: gradle :phone:assembleDebug --stacktrace
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Build Watch APK
-        run: gradle :app:assembleDebug --info 2>&1 | tail -100
+        run: gradle :app:assembleDebug --stacktrace
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
@@ -39,6 +39,7 @@ jobs:
         with:
           name: PhoneRemind-APK
           path: phone/build/outputs/apk/debug/phone-debug.apk
+          if-no-files-found: error
           retention-days: 30
 
       - name: Upload Watch APK
@@ -46,4 +47,5 @@ jobs:
         with:
           name: WatchRemind-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
           retention-days: 30

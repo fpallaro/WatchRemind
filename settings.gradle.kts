@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "WatchRemind"
 include(":app")
+include(":phone")

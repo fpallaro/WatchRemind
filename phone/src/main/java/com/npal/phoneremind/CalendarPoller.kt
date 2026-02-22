@@ -13,9 +13,9 @@ object CalendarPoller {
     private const val TAG = "PhoneRemind"
 
     data class CalendarEvent(
-        val id: Long,
+        val id: Long,        // parent EVENT_ID
         val title: String,
-        val startTime: Long,
+        val startTime: Long, // instance BEGIN time
         val location: String
     )
 
@@ -23,22 +23,18 @@ object CalendarPoller {
         val now = System.currentTimeMillis()
         val weekFromNow = now + TimeUnit.DAYS.toMillis(7)
 
+        val uri = CalendarContract.Instances.buildQueryUri(now, weekFromNow)
         val projection = arrayOf(
-            CalendarContract.Events._ID,
-            CalendarContract.Events.TITLE,
-            CalendarContract.Events.DTSTART,
-            CalendarContract.Events.EVENT_LOCATION
+            CalendarContract.Instances.EVENT_ID,
+            CalendarContract.Instances.TITLE,
+            CalendarContract.Instances.BEGIN,
+            CalendarContract.Instances.EVENT_LOCATION
         )
-        val selection = "${CalendarContract.Events.DTSTART} >= ? " +
-            "AND ${CalendarContract.Events.DTSTART} <= ? " +
-            "AND ${CalendarContract.Events.DELETED} = 0"
-        val selectionArgs = arrayOf(now.toString(), weekFromNow.toString())
 
         val cursor = try {
             context.contentResolver.query(
-                CalendarContract.Events.CONTENT_URI,
-                projection, selection, selectionArgs,
-                "${CalendarContract.Events.DTSTART} ASC"
+                uri, projection, null, null,
+                "${CalendarContract.Instances.BEGIN} ASC"
             )
         } catch (e: SecurityException) {
             Log.e(TAG, "No calendar permission: ${e.message}")
@@ -56,7 +52,7 @@ object CalendarPoller {
                 ))
             }
         }
-        Log.d(TAG, "Found ${events.size} upcoming events")
+        Log.d(TAG, "Found ${events.size} upcoming events (including recurring)")
         return events
     }
 
@@ -74,8 +70,10 @@ object CalendarPoller {
                 putExtra("event_start", event.startTime)
                 putExtra("event_location", event.location)
             }
+            // Unique request code per instance: combines eventId and minute-precision start time
+            val requestCode = ((event.id xor (event.startTime / 60000)) % Int.MAX_VALUE).toInt()
             val pending = PendingIntent.getBroadcast(
-                context, (event.id % Int.MAX_VALUE).toInt(), intent,
+                context, requestCode, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pending)

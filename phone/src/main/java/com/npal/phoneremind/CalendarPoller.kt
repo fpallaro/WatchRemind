@@ -2,6 +2,7 @@ package com.npal.phoneremind
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.provider.CalendarContract
@@ -23,7 +24,10 @@ object CalendarPoller {
         val now = System.currentTimeMillis()
         val weekFromNow = now + TimeUnit.DAYS.toMillis(7)
 
-        val uri = CalendarContract.Instances.buildQueryUri(now, weekFromNow)
+        val uriBuilder = CalendarContract.Instances.CONTENT_URI.buildUpon()
+        ContentUris.appendId(uriBuilder, now)
+        ContentUris.appendId(uriBuilder, weekFromNow)
+        val uri = uriBuilder.build()
         val projection = arrayOf(
             CalendarContract.Instances.EVENT_ID,
             CalendarContract.Instances.TITLE,

@@ -1,6 +1,7 @@
 package com.npal.phoneremind
 
 import android.content.BroadcastReceiver
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.provider.CalendarContract
@@ -75,10 +76,10 @@ class AlarmReceiver : BroadcastReceiver() {
 
     private fun eventExists(context: Context, eventId: Long, startTime: Long): Boolean {
         if (eventId < 0) return false
-        val uri = CalendarContract.Instances.buildQueryUri(
-            startTime - TimeUnit.MINUTES.toMillis(1),
-            startTime + TimeUnit.MINUTES.toMillis(1)
-        )
+        val uriBuilder = CalendarContract.Instances.CONTENT_URI.buildUpon()
+        ContentUris.appendId(uriBuilder, startTime - TimeUnit.MINUTES.toMillis(1))
+        ContentUris.appendId(uriBuilder, startTime + TimeUnit.MINUTES.toMillis(1))
+        val uri = uriBuilder.build()
         val cursor = context.contentResolver.query(
             uri,
             arrayOf(CalendarContract.Instances.EVENT_ID),
